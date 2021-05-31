@@ -1,0 +1,25 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+  web:
+    build: ../../
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - ../../:/myapp
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: password
+    ports:
+      - "4200:3000"
+    depends_on:
+      - db
+volumes:
+  db_data:

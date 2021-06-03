@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
   def home
-    render json: { success: true, message: "Hello Rails Docker App v1.0.1" }
+    render json: { success: true, message: "Hello Rails Docker App Trigger In Master Branch" }
   end
 end

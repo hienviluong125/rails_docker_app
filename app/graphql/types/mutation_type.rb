@@ -3,5 +3,6 @@ module Types
     field :destroy_post, mutation: Mutations::DestroyPost
     field :update_post, mutation: Mutations::UpdatePost
     field :create_post, mutation: Mutations::CreatePost
+    field :create_attachment, mutation: Mutations::CreateAttachment
   end
 end

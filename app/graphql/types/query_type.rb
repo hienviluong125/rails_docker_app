@@ -7,9 +7,16 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
     field :posts, [PostType], null: false
+    field :post, PostType, null: true do
+      argument :id, ID, required: true
+    end
 
     def posts
       Post.all
+    end
+
+    def post(id:)
+      Post.find_by(id: id)
     end
   end
 end

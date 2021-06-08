@@ -5,14 +5,20 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-Post.destroy_all
 
-Post.create(
-  short_content: 'First post',
-  content: 'First post blah blah blah',
-)
+12.times do
+  post = Post.create(
+    content: FFaker::Lorem.sentences.join(' '),
+    short_content: FFaker::Lorem.sentence,
+  )
 
-Post.create(
-  short_content: 'Second post',
-  content: 'Second post blah blah blah',
-)
+  attachment_a = Attachment.new
+  attachment_a.remote_file_url = FFaker::Image.url
+  attachment_a.save
+
+  attachment_b = Attachment.new
+  attachment_b.remote_file_url = FFaker::Image.url
+  attachment_b.save
+
+  post.update(attachment_ids: [attachment_b.id, attachment_a.id])
+end

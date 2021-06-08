@@ -1,20 +1,26 @@
 module Mutations
   class CreateAttachment < BaseMutation
-    # argument :file, File, required: true
-    argument :remote_file_url, String, required: true
+    argument :file, ApolloUploadServer::Upload, required: false
+    argument :remote_file_url, String, required: false
 
     field :success, String, null: false
+    field :attachment, Types::AttachmentType, null: true
     field :errors, [String], null: false
 
-    def resolve(remote_file_url:)
+    def resolve(file:, remote_file_url:)
       attachment = Attachment.new
-      attachment.remote_file_url = remote_file_url
 
-      if attachment.save
-        return { success: true, errors: [] }
+      if file.present?
+        attachment.file = file
+      elsif remote_file_url.present?
+        attachment.remote_file_url = remote_file_url
       end
 
-      { success: false, errors: attachment.errors.full_messages }
+      if attachment.save
+        return { success: true, errors: [], attachment: attachment }
+      end
+
+      { success: false, errors: attachment.errors.full_messages, attachment: nil }
     end
   end
 end

@@ -65,6 +65,7 @@ GEM
     apollo_upload_server (2.0.5)
       actionpack (>= 4.2)
       graphql (>= 1.8)
+    bcrypt (3.1.16)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -174,6 +175,7 @@ PLATFORMS
 
 DEPENDENCIES
   apollo_upload_server (~> 2.0.5)
+  bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
   byebug
   carrierwave (~> 2.0)

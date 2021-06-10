@@ -3,4 +3,5 @@ class Post < ApplicationRecord
   validates :short_content, presence: true
 
   has_many :attachments, as: :imageable, dependent: :destroy
+  belongs_to :user
 end

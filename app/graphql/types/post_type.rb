@@ -1,5 +1,7 @@
 module Types
   class PostType < Types::BaseObject
+    include ActionView::Helpers::DateHelper
+
     # Base fields
     field :id, ID, null: false
     field :content, String, null: false
@@ -7,7 +9,7 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
 
     # associations
-    field :user, GraphQL::Types::JSON, null: false
+    field :user, Types::UserType, null: false
     field :attachments, [Types::AttachmentType], null: false
     field :comments, [GraphQL::Types::JSON], null: false
 
@@ -18,17 +20,6 @@ module Types
     field :comments_count_label, String, null: false
     field :liked, Boolean, null: false
     field :created_at_label, String, null: false
-
-    # TODO: 1 post should belong to one user
-    def user
-      {
-        displayName: "Ruby on Rails Foundation",
-        avatar: {
-          attachmentType: 'image',
-          url: 'https://pbs.twimg.com/media/CZGHPChUAAA3jqE.png'
-        }
-      }
-    end
 
     # TODO: 1 post should has many comments
     def comments
@@ -61,7 +52,7 @@ module Types
     end
 
     def created_at_label
-      "2 DAYS AGO"
+      "#{time_ago_in_words(object.created_at)} ago".upcase
     end
 
     def comments_count

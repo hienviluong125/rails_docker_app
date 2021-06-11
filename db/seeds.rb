@@ -6,6 +6,8 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+User.destroy_all
+
 3.times do
   user = User.create!(
     display_name: FFaker::Name.name,
@@ -26,10 +28,8 @@ end
   rd_user_id = User.pluck(:id).sample
   post = Post.create!(
     content: FFaker::Lorem.sentences.join(' '),
-    short_content: FFaker::Lorem.sentence,
     user_id: rd_user_id
   )
-
 
   attachment_a = Attachment.new
   attachment_a.remote_file_url = FFaker::Image.url
@@ -41,8 +41,19 @@ end
 
   post.update!(attachment_ids: [attachment_b.id, attachment_a.id])
 
-  rd_second_user_id = User.where.not(id: rd_user_id).pluck(:id).sample
-  Like.create(user_id: rd_second_user_id, post_id: post.id)
+  Like.create(user_id: User.where.not(id: rd_user_id).pluck(:id).sample, post_id: post.id)
+
+  Comment.create(
+    user_id: User.where.not(id: rd_user_id).pluck(:id).sample,
+    post_id: post.id,
+    content: FFaker::Lorem.sentences.join(' '),
+  )
+
+  Comment.create(
+    user_id: User.where.not(id: rd_user_id).pluck(:id).sample,
+    post_id: post.id,
+    content: FFaker::Lorem.sentences.join(' '),
+  )
 end
 
 puts "Done !!!"

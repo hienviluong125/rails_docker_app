@@ -13,7 +13,7 @@ module Types
     # associations
     field :user, Types::UserType, null: false
     field :attachments, [Types::AttachmentType], null: false
-    field :comments, [GraphQL::Types::JSON], null: false
+    field :comments, [Types::CommentType], null: false
 
     # Additional fields
     field :likes_count, String, null: false
@@ -22,28 +22,6 @@ module Types
     field :comments_count_label, String, null: false
     field :liked, Boolean, null: false
     field :created_at_label, String, null: false
-
-    # TODO: 1 post should has many comments
-    def comments
-      [
-        {
-          user: {
-            displayName: 'Alex',
-          },
-          content: 'Interesting It is a long established fact that a reader',
-          createdAt: Date.new,
-          createdAtLabel: '17 hours ago'
-        },
-        {
-          user: {
-            displayName: 'John',
-          },
-          content: 'Lorem',
-          createdAt: Date.new,
-          createdAtLabel: '30 minutes ago'
-        }
-      ]
-    end
 
     def likes_count
       object.likes.count
@@ -58,17 +36,21 @@ module Types
     end
 
     def comments_count
-      1675
+      object.comments.count
     end
 
     def comments_count_label
-      "1,675 comments"
+      pluralize(number_with_delimiter(object.comments.count), 'comment')
     end
 
     def liked
       return false if context[:current_user].blank?
 
       context[:current_user].liked_post?(object.id)
+    end
+
+    def comments
+      object.comments.last(2)
     end
   end
 end

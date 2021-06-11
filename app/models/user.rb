@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_one :avatar, as: :imageable, dependent: :destroy, class_name: "Attachment"
   has_many :likes, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
+  has_many :comments, dependent: :destroy
 
   def liked_post?(post_id)
     likes.find_by(post_id: post_id).present?

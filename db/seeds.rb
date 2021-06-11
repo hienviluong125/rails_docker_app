@@ -20,23 +20,29 @@
   user.avatar = attachment_avatar
   user.save!
 
-  2.times do
-    post = Post.create!(
-      content: FFaker::Lorem.sentences.join(' '),
-      short_content: FFaker::Lorem.sentence,
-      user_id: user.id
-    )
+end
 
-    attachment_a = Attachment.new
-    attachment_a.remote_file_url = FFaker::Image.url
-    attachment_a.save!
+10.times do
+  rd_user_id = User.pluck(:id).sample
+  post = Post.create!(
+    content: FFaker::Lorem.sentences.join(' '),
+    short_content: FFaker::Lorem.sentence,
+    user_id: rd_user_id
+  )
 
-    attachment_b = Attachment.new
-    attachment_b.remote_file_url = FFaker::Image.url
-    attachment_b.save!
 
-    post.update!(attachment_ids: [attachment_b.id, attachment_a.id])
-  end
+  attachment_a = Attachment.new
+  attachment_a.remote_file_url = FFaker::Image.url
+  attachment_a.save!
+
+  attachment_b = Attachment.new
+  attachment_b.remote_file_url = FFaker::Image.url
+  attachment_b.save!
+
+  post.update!(attachment_ids: [attachment_b.id, attachment_a.id])
+
+  rd_second_user_id = User.where.not(id: rd_user_id).pluck(:id).sample
+  Like.create(user_id: rd_second_user_id, post_id: post.id)
 end
 
 puts "Done !!!"

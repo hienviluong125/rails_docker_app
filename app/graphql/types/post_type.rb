@@ -1,6 +1,8 @@
 module Types
   class PostType < Types::BaseObject
     include ActionView::Helpers::DateHelper
+    include ActionView::Helpers::NumberHelper
+    include ActionView::Helpers::TextHelper
 
     # Base fields
     field :id, ID, null: false
@@ -44,11 +46,11 @@ module Types
     end
 
     def likes_count
-      2000
+      object.likes.count
     end
 
     def likes_count_label
-      "2,000 likes"
+      pluralize(number_with_delimiter(object.likes.count), 'like')
     end
 
     def created_at_label
@@ -64,7 +66,9 @@ module Types
     end
 
     def liked
-      [true, false].sample
+      return false if context[:current_user].blank?
+
+      context[:current_user].liked_post?(object.id)
     end
   end
 end
